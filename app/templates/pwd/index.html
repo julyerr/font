@@ -17,7 +17,6 @@
         </script>
     </head>
     <body>
-        <div id="imageName" style="visibility: hidden;">{{ experiment.containerName }}</div>
         <div layout="column" style="height:100%;" ng-cloak>
             <section id="sessionEnd" layout="row" flex ng-if="!isAlive">
               <md-content flex layout-padding ng-if="!instances.length">
@@ -112,7 +111,7 @@
               </md-content>
             </section>
         </div>
-
+        <p id="imageName" style="visibility: hidden;">{{ experiment.containerName }}</p>
         <script type="text/ng-template" id="settings-modal.html">
             <md-toolbar>
                 <div class="md-toolbar-tools">

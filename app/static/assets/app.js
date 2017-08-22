@@ -118,8 +118,8 @@
 
     $http({
       method: 'POST',
-      url: 'http://116.196.86.115/',
-      data : { ImageName : 'centos' }
+      url: 'http://116.196.86.115/pwd',
+      data: {  DurReq: '6h'}
     }).then(function(response) {
       console.log(response.data)
       $scope.sessionId = response.data.session_id;
@@ -187,7 +187,7 @@
 
     $scope.newInstance = function() {
       updateNewInstanceBtnState(true);
-      var ImageName = 'ubuntu';
+      var ImageName = document.getElementById('imageName').innerHTML;
       $http({
         method: 'POST',
         url: 'http://116.196.86.115/sessions/' + $scope.sessionId + '/instances',
@@ -259,7 +259,7 @@
     $scope.deleteInstance = function(instance) {
       updateDeleteInstanceBtnState(true);
       $http({
-        method: 'DELETE',
+        method: 'POST',
         url: 'http://116.196.86.115/sessions/' + $scope.sessionId + '/instances/' + instance.name,
       }).then(function(response) {
         $scope.removeInstance(instance.name);
