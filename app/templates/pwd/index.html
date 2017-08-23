@@ -7,16 +7,10 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='assets/xterm.css' ) }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/xterm-addons/fullscreen.css' ) }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='assets/style.css' ) }}" />
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-            ga('create', 'UA-89019737-1', 'auto');
-            ga('send', 'pageview');
-        </script>
     </head>
-    <body>
+    <body layout="row">
+    <div layout="column" style="width:25%">gwqqhq34herqrenren</div>
+      <div layout="column" style="width:75%" >
         <div layout="column" style="height:100%;" ng-cloak>
             <section id="sessionEnd" layout="row" flex ng-if="!isAlive">
               <md-content flex layout-padding ng-if="!instances.length">
@@ -34,83 +28,46 @@
                 <md-progress-circular class="md-hue-2" md-diameter="20px"></md-progress-circular>
             </section>
 
-            <section id="popupContainer" layout="row" flex ng-if="isAlive">
-              <md-sidenav
-                  class="md-sidenav-left"
-                  md-component-id="left"
-                  md-is-locked-open="$mdMedia('gt-sm')"
-                  md-whiteframe="4" layout="column">
+            <section id="popupContainer" layout="column" flex ng-if="isAlive">
+<md-toolbar layout="row" layout-align="center">
+  <div class="clock">[[ttl]]</div>
+</md-toolbar>
+<md-toolbar class="md-theme-indigo" layout="row">
+  <div> <md-button  ng-click="newInstance()" ng-disabled="isInstanceBeingCreated" class="md-button" >[[newInstanceBtnText]]</md-button></div>
+      <div  ng-repeat="instance in instances" ng-show="instance.name == selectedInstance.name">
+            <md-button class="md-warn md-raised" ng-click="deleteInstance(instance)" ng-disabled="isInstanceBeingDeleted">[[deleteInstanceBtnText]]</md-button>
+            <settings-icon></settings-icon>
+  </div>
+  <div style="margin-right: 0px">
+    <settings-icon></settings-icon>
+  <md-button  class="md-warn md-raised" ng-click="closeSession()">Close session</md-button>
+  </div>
+</md-toolbar>
+<md-content flex layout-padding ng-if="!instances.length">
+  <div layout="column" layout-align="top center">
+    <p>Add instances to your playground.</p>
+    <p><strong>Sessions and all their instances are deleted after [[ttl]] hours.</strong></p>
+  </div>
 
-                <md-toolbar class="md-theme-indigo">
-                  <span class="clock">[[ttl]]</span>
-                  <md-button class="md-warn md-raised" ng-click="closeSession()">Close session</md-button>
-                  <div class="md-toolbar-tools">
-                    <h1 class="md-toolbar-tools">Instances</h1>
-                    <settings-icon></settings-icon>
-                  </div>
-                </md-toolbar>
-                <md-content layout-padding>
-                  <md-button ng-click="newInstance()" ng-disabled="isInstanceBeingCreated" class="md-primary">[[newInstanceBtnText]]</md-button>
-              <md-list>
-                <md-list-item ng-switch on="instance.isManager" class="md-3-line" ng-repeat="instance in instances" ng-click="showInstance(instance)" ng-class="instance.name == selectedInstance.name ? 'selected' : false">
-                    <md-icon ng-switch-when="true" style="color: blue" md-svg-icon="person"></md-icon>
-                    <md-icon ng-switch-when="false" md-svg-icon="person-outline"></md-icon>
-                    <p>[[instance.name]]</p>
-                    <md-divider ng-if="!$last"></md-divider>
-                </md-list-item>
-              </md-list>
-                </md-content>
+  <div flex></div>
+</md-content>
 
-              </md-sidenav>
-              <md-content flex layout-padding ng-if="!instances.length">
-                <div layout="column" layout-align="top center">
-                  <p>Add instances to your playground.</p>
-                  <p><strong>Sessions and all their instances are deleted after [[ttl]] hours.</strong></p>
-                </div>
+  <md-list layout="row">
+    <md-list-item   ng-repeat="instance in instances" ng-click="showInstance(instance)" ng-class="instance.name == selectedInstance.name ? 'selected' : false" >
+        <p>[[instance.name]]</p>
+    </md-list-item>
+  </md-list>
+  <div></div>
+  <div ng-repeat="instance in instances" ng-show="instance.name == selectedInstance.name" style="margin-top: 25px">
+    <md-card flex md-theme="default" md-theme-watch >
+        <md-card-content flex id="terminal-[[instance.name]]" class="terminal-container">
+        </md-card-content>
+    </md-card>
+    </div>
+</section>  
+    </div>
+    
 
-                <div flex></div>
-              </md-content>
-              <md-content flex layout="column" ng-repeat="instance in instances" ng-show="instance.name == selectedInstance.name">
-                  <md-card class="stats" md-theme="default" md-theme-watch>
-                      <md-card-title>
-                          <md-card-title-text>
-                              <span class="md-headline">[[instance.name]]</span>
-                          </md-card-title-text>
-                      </md-card-title>
-                      <md-card-content>
-                          <div layout-gt-sm="row">
-                             <md-input-container class="md-icon-float md-block">
-                               <label>IP</label>
-                               <input ng-model="instance.ip" type="text" readonly="readonly">
-                             </md-input-container>
-                             <md-chips ng-model="instance.ports" name="port" readonly="true" md-removable="false">
-                               <md-chip-template>
-                               <strong><a href="[[getProxyUrl(instance, $chip)]]" title="[[getProxyUrl(instance, $chip)]]" target="_blank">[[$chip]]</a></strong>
-                               </md-chip-template>
-                             </md-chips>
-                          </div>
-                          <div layout-gt-sm="row">
-                             <md-input-container class="md-block" flex-gt-sm>
-                               <label>Memory</label>
-                               <input ng-model="instance.mem" type="text" readonly="readonly">
-                             </md-input-container>
-                             <md-input-container class="md-block" flex-gt-sm>
-                               <label>CPU</label>
-                               <input ng-model="instance.cpu" type="text" readonly="readonly">
-                             </md-input-container>
-                          </div>
-                      </md-card-content>
-                      <md-card-actions>
-                          <md-button class="md-warn md-raised" ng-click="deleteInstance(instance)" ng-disabled="isInstanceBeingDeleted">[[deleteInstanceBtnText]]</md-button>
-                          </md-card-actions>
-                  </md-card>
-                  <md-card flex md-theme="default" md-theme-watch >
-                      <md-card-content flex id="terminal-[[instance.name]]" class="terminal-container">
-                      </md-card-content>
-                  </md-card>
-              </md-content>
-            </section>
-        </div>
         <p id="imageName" style="visibility: hidden;">{{ experiment.containerName }}</p>
         <script type="text/ng-template" id="settings-modal.html">
             <md-toolbar>
@@ -192,15 +149,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script>
         <script type="text/javascript" charset="utf-8">
             window.onbeforeunload = function (e) {
-                e = e || window.event;
-
-                // For IE and Firefox prior to version 4
-                if (e) {
-                    e.returnValue = 'Make sure you saved your session URL';
-                }
-
-                // For Safari
-                return 'Make sure you saved your session URL';
+                return "Are you sure to leave, all the instances in the sessions will be lost !"
             };
         </script>
     </body>
