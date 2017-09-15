@@ -2,5 +2,4 @@
 *.pyc
 instance/
 migrations/
-run.sh
 font/
