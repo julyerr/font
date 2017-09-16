@@ -132,6 +132,7 @@ class Session(db.Model):
     sessionComment = db.Column(db.String(200))
     name = db.Column(db.String(20),nullable=False)
     isTeacher = db.Column(db.Boolean)
+    image = db.Column(db.String(20))
     experiment = db.Column(db.String(40))
 
 class Images(db.Model):

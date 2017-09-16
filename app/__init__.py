@@ -10,7 +10,7 @@ from flask_moment import Moment
 from config import app_config
 
 # db variable initialization
-PWD_IP = '116.196.86.115:8080/experiment'
+PWD_IP = 'http://116.196.86.115:18808'
 db = SQLAlchemy()
 login_manager = LoginManager()
 # db object which we will use to interact with the database.

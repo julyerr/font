@@ -24,7 +24,7 @@ def teacher_dashboard():
         abort(403)
     students = Student.query.all()
     sessions = Session.query.filter_by(name=current_user.name).all()
-    return render_template('home/teacher_dashboard.html', students=students,sessions=sessions)
+    return render_template('home/teacher_dashboard.html', students=students,sessions=sessions,ip=PWD_IP)
 
 
 @home.route('/list_courses', methods=['GET', 'POST'])
@@ -37,9 +37,9 @@ def list_courses():
         experimentSet.append(experiments)
     # return render_template('home/list_courses.html', title='Student Classes', courses=courses,
     # experimentSet=experimentSet)
-    sessions = Session.query.filter_by(name=current_user.name).all()
+    sessions = Session.query.filter_by(name=current_user.realname).all()
     return render_template('home/list_courses.html', courses=courses, experimentSet=experimentSet,
-                           name=current_user.realname,sessions=sessions,isTeacher="student")
+                           name=current_user.realname,sessions=sessions,isTeacher="student",ip=PWD_IP)
 
 
 @home.route('/selectCourseForm', methods=['GET', 'POST'])
@@ -106,7 +106,6 @@ def delete_session(id,isTeacher):
         r = requests.post("http://localhost:8080/users/"+current_user.name+"/sessions/"+id+"/delete")
         if r.status_code != 200:
             flash(u'删除session失败')
-        return
     except:
         if isTeacher == "teacher":
             return redirect(url_for('home.teacher_dashboard'))
@@ -114,21 +113,4 @@ def delete_session(id,isTeacher):
     if isTeacher == "teacher":
         return redirect(url_for('home.teacher_dashboard'))
     return redirect(url_for('home.list_courses')) 
-
-@home.route('/session/resume/<string:id>/<string:isTeacher>',methods=['GET','POST'])
-@login_required
-def resume_session(id,isTeacher):
-    try:
-        r = requests.post("http://localhost:8080/users/"+current_user.name+"/sessions/"+id+"/resume")
-        if r.status_code != 200:
-            flash(u'删除session失败')
-        return
-    except:
-        if isTeacher == "teacher":
-            return redirect(url_for('home.teacher_dashboard'))
-        return redirect(url_for('home.list_courses'))    
-    if isTeacher == "teacher":
-        return redirect(url_for('home.teacher_dashboard'))
-    return redirect(url_for('home.list_courses'))    
-
 

@@ -77,6 +77,8 @@
         <div class="col-md-3">
   {{ form.submit(class="btn btn-outline-success my-2 my-sm-0", style="width:270px;") }}
         </div>
+        </div>
+</form>
         <div class="col-md-3">
             <form id="teacher" method="GET" action="http://116.196.86.115:18808/experiment" target="_blank">
               <button id="start" type="submit">前往实验平台</button>
@@ -86,7 +88,6 @@
                 <input id="image" type="hidden" name="image" value="{{ image }}"/>
             </form>
     </div>
-</form>
 
 </div>
 {% endblock page_content %}

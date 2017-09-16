@@ -103,9 +103,9 @@
                       </a>
                 </td>
                 <td>
-                  <a href="{{ url_for('home.resume_session', id = session.sessionId,isTeacher='student') }}" class="">
+			<a href='{{ ip }}/users/{{ session.name }}/sessions/{{ session.sessionId }}/resume' class="" target="_blank">
                       Resume
-                      </a>
+                      </a>	
                 </td>
               </tr>
               {% endfor %}
