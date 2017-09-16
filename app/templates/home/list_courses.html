@@ -69,7 +69,12 @@
                   {% if experimentSet %}
                   <ul class="list-group list-group-flush">
                       {% for experiment in experimentSet[loop.index0] %}
-                      <li class="list-group-item"><a class="btn" href="{{ url_for('home.experiment',id=experiment.id) }}">{{ experiment.name }}</a></li>
+                      <form id="student" method="GET" action="http://116.196.86.115:18808/experiment" target="_blank">
+                      <input id="name" type="hidden" name="name" value="{{ name }}"/>
+                      <input id="isTeacher" type="hidden" name="isTeacher" value="{{ isTeacher }}"/>
+                      <input id="experiment" type="submit" name="experiment" value="{{ experiment.name }}"/>
+                      <input id="image" type="hidden" name="image" value="{{ experiment.containerName }}"/>
+                    </form>
                       {% endfor %}
                   </ul>
                   {% endif %}
@@ -78,6 +83,34 @@
           {% endfor %}
 
           {% endif %}
+          <h1>保存的Sessions</h1>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Session ID</th>
+                  <th>Session Comment</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              {% for session in sessions %}
+              <tr>
+                <td>{{ session.sessionId }}</td>
+                <td>{{ session.sessionComment }}</td>
+                <td>
+                  <a href="{{ url_for('home.delete_session', id = session.sessionId,isTeacher='student') }}" class="">
+                      Delete
+                      </a>
+                </td>
+                <td>
+                  <a href="{{ url_for('home.resume_session', id = session.sessionId,isTeacher='student') }}" class="">
+                      Resume
+                      </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
           <div class="col-lg-4">
               <div class="card">
                   <h4 class="card-header">选课</h4>

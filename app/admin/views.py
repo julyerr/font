@@ -158,7 +158,7 @@ def edit_experiment(id):
     experiment.courseNums = form.courseNums.data# .courseNums
     experiment.containerName = form.containerName.data
     return render_template('admin/experiments/experiment.html', add_experiment=add_experiment,
-                           form=form, title="Edit experiment")
+                           form=form, title="Edit experiment",name=current_user.name,isTeacher="teacher")
 
 @admin.route('/experiments/add', methods=['GET', 'POST'])
 @login_required
@@ -189,7 +189,7 @@ def add_experiment():
         return redirect(url_for('admin.list_experiments'))
 
     return render_template('admin/experiments/experiment.html', add_experiment=add_experiment,
-                           form=form, title="Add experiment")
+                           form=form, title="Add experiment",name=current_user.name,isTeacher="teacher")
 
 @admin.route('/experiments/ckupload/', methods=['POST', 'OPTIONS'])
 @login_required
@@ -270,9 +270,9 @@ def related_students():
     return render_template('admin/related_students.html',
                            courses=courses, studentsList=studentsList)
 
-@admin.route('/experiment_before', methods=['GET', 'POST'])
-@login_required
-def experiment_before():
-    # experiment = Experiment.query.filter_by(name=name).first()
-    return render_template('pwd/index.html',isTeacher=1, title='terminal online')
+# @admin.route('/experiment_before', methods=['GET', 'POST'])
+# @login_required
+# def experiment_before():
+#     # experiment = Experiment.query.filter_by(name=name).first()
+#     return render_template('pwd/index.html',isTeacher=1, title='terminal online')
 

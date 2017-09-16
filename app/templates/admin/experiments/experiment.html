@@ -78,8 +78,13 @@
   {{ form.submit(class="btn btn-outline-success my-2 my-sm-0", style="width:270px;") }}
         </div>
         <div class="col-md-3">
-            <a href="{{ url_for('admin.experiment_before') }}" class="btn btn-outline-success my-2 my-sm-0 myfixedbutton">前往实验平台</a>
-        </div>
+            <form id="teacher" method="GET" action="http://116.196.86.115:18808/experiment" target="_blank">
+              <button id="start" type="submit">前往实验平台</button>
+                <input id="name" type="hidden" name="name" value="{{ name }}"/>
+                <input id="isTeacher" type="hidden" name="isTeacher" value="{{ isTeacher }}"/>
+                <input id="experiment" type="hidden" name="experiment" value="{{ experiment }}"/>
+                <input id="image" type="hidden" name="image" value="{{ image }}"/>
+            </form>
     </div>
 </form>
 

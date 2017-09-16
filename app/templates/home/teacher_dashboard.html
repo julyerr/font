@@ -55,6 +55,34 @@
         </nav>
 
         <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
+          <h1>保存的Sessions</h1>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Session ID</th>
+                  <th>Session Comment</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              {% for session in sessions %}
+              <tr>
+                <td>{{ session.sessionId }}</td>
+                <td>{{ session.sessionComment }}</td>
+                <td>
+                  <a href="{{ url_for('home.delete_session', id = session.sessionId,isTeacher='teacher') }}" class="">
+                      Delete
+                      </a>
+                </td> 
+                <td>
+                  <a href="{{ url_for('home.resume_session', id = session.sessionId,isTeacher='teacher') }}" class="">
+                      Resume
+                      </a>
+                </td>
+              </tr>
+               {% endfor %}
+            </table>
+          </div>
           <h1>学生花名册</h1>
           <div class="table-responsive">
             <table class="table table-striped">

@@ -126,3 +126,16 @@ class Container(db.Model):
     __tablename__ = 'containers'
     name = db.Column(db.String(60), primary_key=True)
 
+class Session(db.Model):
+    __tablename__ = 'sessions'
+    sessionId = db.Column(db.String(60),nullable = False,primary_key=True)
+    sessionComment = db.Column(db.String(200))
+    name = db.Column(db.String(20),nullable=False)
+    isTeacher = db.Column(db.Boolean)
+    experiment = db.Column(db.String(40))
+
+class Images(db.Model):
+    __tablename__ = 'images'
+    imageId = db.Column(db.String(40),primary_key=True)
+    hostname =db.Column(db.String(40))
+    sessionId = db.Column(db.String(60),db.ForeignKey('sessions.sessionId'))

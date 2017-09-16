@@ -3,13 +3,13 @@ from flask import abort, flash, redirect, render_template, url_for, request, jso
 from flask_login import login_required, current_user, logout_user
 from ..models import Student, Teacher, Experiment, Course
 from . import home
-from .. import db
+from .. import db,PWD_IP
 from ..auth.forms import UpdateForm
 from werkzeug.security import generate_password_hash
 import json
 
-from ..models import Container
-
+from ..models import Container,Session
+import requests
 
 # @home.route('/dashboard', methods=['GET', 'POST'])
 # @login_required
@@ -23,7 +23,8 @@ def teacher_dashboard():
     if not current_user.isTeacher:
         abort(403)
     students = Student.query.all()
-    return render_template('home/teacher_dashboard.html', students=students)
+    sessions = Session.query.filter_by(name=current_user.name).all()
+    return render_template('home/teacher_dashboard.html', students=students,sessions=sessions)
 
 
 @home.route('/list_courses', methods=['GET', 'POST'])
@@ -36,8 +37,9 @@ def list_courses():
         experimentSet.append(experiments)
     # return render_template('home/list_courses.html', title='Student Classes', courses=courses,
     # experimentSet=experimentSet)
+    sessions = Session.query.filter_by(name=current_user.name).all()
     return render_template('home/list_courses.html', courses=courses, experimentSet=experimentSet,
-                           name=current_user.realname)
+                           name=current_user.realname,sessions=sessions,isTeacher="student")
 
 
 @home.route('/selectCourseForm', methods=['GET', 'POST'])
@@ -65,13 +67,13 @@ def selectCourse():  # 查询表单提交处理函数
         return redirect(url_for('home.selectCourseForm'))
 
 
-@home.route('/experiment/<string:id>', methods=['GET', 'POST'])
-@login_required
-def experiment(id):
-    experiment = Experiment.query.filter_by(id=id).first()
-    return render_template('pwd/index.html', content=experiment.content,
-                           containerName=experiment.containerName,
-                           isTeacher=0, title='terminal online')
+# @home.route('/experiment/<string:id>', methods=['GET', 'POST'])
+# @login_required
+# def experiment(id):
+#     experiment = Experiment.query.filter_by(id=id).first()
+#     return render_template('pwd/index.html', content=experiment.content,
+#                            containerName=experiment.containerName,
+#                            isTeacher=0, title='terminal online')
 
 
 @home.route('/update_infos', methods=['GET', 'POST'])
@@ -96,3 +98,37 @@ def images_search():
     for i in Container.query.filter(Container.name.like('%' + imageName['term'] + '%')).all():
         imageNames.append(i.name)
     return jsonify(imageNames)
+
+@home.route('/session/delete/<string:id>/<string:isTeacher>',methods=['GET','POST'])
+@login_required
+def delete_session(id,isTeacher):
+    try:
+        r = requests.post("http://localhost:8080/users/"+current_user.name+"/sessions/"+id+"/delete")
+        if r.status_code != 200:
+            flash(u'删除session失败')
+        return
+    except:
+        if isTeacher == "teacher":
+            return redirect(url_for('home.teacher_dashboard'))
+        return redirect(url_for('home.list_courses'))    
+    if isTeacher == "teacher":
+        return redirect(url_for('home.teacher_dashboard'))
+    return redirect(url_for('home.list_courses')) 
+
+@home.route('/session/resume/<string:id>/<string:isTeacher>',methods=['GET','POST'])
+@login_required
+def resume_session(id,isTeacher):
+    try:
+        r = requests.post("http://localhost:8080/users/"+current_user.name+"/sessions/"+id+"/resume")
+        if r.status_code != 200:
+            flash(u'删除session失败')
+        return
+    except:
+        if isTeacher == "teacher":
+            return redirect(url_for('home.teacher_dashboard'))
+        return redirect(url_for('home.list_courses'))    
+    if isTeacher == "teacher":
+        return redirect(url_for('home.teacher_dashboard'))
+    return redirect(url_for('home.list_courses'))    
+
+
