@@ -1,4 +1,6 @@
+#coding=utf-8
 # app/__init__.py
+
 import os
 # third-party imports
 from flask import Flask, render_template, abort
@@ -33,8 +35,11 @@ def create_app(config_name):
     Bootstrap(app)
     db.init_app(app)
     moment = Moment(app)
+
+    # 用户认证管理
     login_manager.init_app(app)
     login_manager.login_message = "You are not authorised to see this page. Please log in"
+    # 设置登入url
     login_manager.login_view = "auth.login"
 
     from app import models

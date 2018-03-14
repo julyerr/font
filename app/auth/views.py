@@ -89,19 +89,20 @@ def register():
 
 @auth.route('/', methods=['GET', 'POST'])
 def login():
+    # 该用户是否已经登入
     if 'user_id' in session.keys():
         if current_user.isTeacher:
             return redirect(url_for('admin.list_courses'))
         else:
             return redirect(url_for('home.list_courses'))
-    # if current_user:
-    #     return redirect(url_for('home.list_courses'))
     form = LoginForm()
     if form.validate_on_submit():
         if form.is_teacher.data:
+            # 密码验证
             teacher = Teacher.query.filter_by(name=form.name.data).first()
             if teacher is not None and teacher.verifypassword(
                     form.password.data):
+                # 设置当前活跃用户以及在session中设置user_id
                 login_user(teacher)
                 return redirect(url_for('home.teacher_dashboard'))
             else:

@@ -18,7 +18,7 @@ class DevelopmentConfig(Config):
     # This allows us to use the Flask debugger in case of an unhandled exception, and
     # also automatically reloads the application when it is updated.
     SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost:3306/step1'
-    SECRET_KEY = 'step1'
+    SECRET_KEY = 'root'
     SQLALCHEMY_ECHO = True
     # setting this to True helps us with debugging by allowing SQLAlchemy to
     # log errors.

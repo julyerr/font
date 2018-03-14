@@ -3,13 +3,14 @@ from flask import abort, flash, redirect, render_template, url_for, request, jso
 from flask_login import login_required, current_user, logout_user
 from ..models import Student, Teacher, Experiment, Course
 from . import home
-from .. import db,PWD_IP
+from .. import db, PWD_IP
 from ..auth.forms import UpdateForm
 from werkzeug.security import generate_password_hash
 import json
 
-from ..models import Container,Session
+from ..models import Container, Session
 import requests
+
 
 # @home.route('/dashboard', methods=['GET', 'POST'])
 # @login_required
@@ -24,7 +25,7 @@ def teacher_dashboard():
         abort(403)
     students = Student.query.all()
     sessions = Session.query.filter_by(name=current_user.name).all()
-    return render_template('home/teacher_dashboard.html', students=students,sessions=sessions,ip=PWD_IP)
+    return render_template('home/teacher_dashboard.html', students=students, sessions=sessions, ip=PWD_IP)
 
 
 @home.route('/list_courses', methods=['GET', 'POST'])
@@ -35,11 +36,10 @@ def list_courses():
     for i in courses:
         experiments = Experiment.query.filter_by(courseNums=i.courseNums).all()
         experimentSet.append(experiments)
-    # return render_template('home/list_courses.html', title='Student Classes', courses=courses,
-    # experimentSet=experimentSet)
+    #     重定向课程显示界面
     sessions = Session.query.filter_by(name=current_user.realname).all()
     return render_template('home/list_courses.html', courses=courses, experimentSet=experimentSet,
-                           name=current_user.realname,sessions=sessions,isTeacher="student",ip=PWD_IP)
+                           name=current_user.realname, sessions=sessions, isTeacher="student", ip=PWD_IP)
 
 
 @home.route('/selectCourseForm', methods=['GET', 'POST'])
@@ -55,7 +55,9 @@ def selectCourse():  # 查询表单提交处理函数
     course = Course.query.filter_by(courseNums=nums).first()
     if course:
         try:
+            # 通过课程的courseNums添加选课记录
             current_user.courses.append(course)
+            # 提交事务
             db.session.commit()
             flash(u'选课成功')
             return redirect(url_for('home.list_courses'))
@@ -86,6 +88,7 @@ def update_infos():
         student.password_hash = generate_password_hash(form.password.data)
         db.session.commit()
         db.session.close()
+        # 登出
         logout_user()
         return redirect(url_for('auth.login'))
     return render_template('home/update_infos.html', name=current_user.realname, form=form)
@@ -99,18 +102,18 @@ def images_search():
         imageNames.append(i.name)
     return jsonify(imageNames)
 
-@home.route('/session/delete/<string:id>/<string:isTeacher>',methods=['GET','POST'])
+
+@home.route('/session/delete/<string:id>/<string:isTeacher>', methods=['GET', 'POST'])
 @login_required
-def delete_session(id,isTeacher):
+def delete_session(id, isTeacher):
     try:
-        r = requests.post("http://localhost:8080/users/"+current_user.name+"/sessions/"+id+"/delete")
+        r = requests.post("http://localhost:8080/users/" + current_user.name + "/sessions/" + id + "/delete")
         if r.status_code != 200:
             flash(u'删除session失败')
     except:
         if isTeacher == "teacher":
             return redirect(url_for('home.teacher_dashboard'))
-        return redirect(url_for('home.list_courses'))    
+        return redirect(url_for('home.list_courses'))
     if isTeacher == "teacher":
         return redirect(url_for('home.teacher_dashboard'))
-    return redirect(url_for('home.list_courses')) 
-
+    return redirect(url_for('home.list_courses'))

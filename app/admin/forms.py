@@ -17,6 +17,7 @@ class CourseForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+#     文档编辑的表单，具体参见CKEditor相关的使用说明
 class CKEditor(object):
     def __init__(self):
         pass
@@ -32,6 +33,7 @@ class CKEditor(object):
         url = ''
         callback = request.args.get("CKEditorFuncNum")
 
+        # 文件保存
         if request.method == 'POST' and 'upload' in request.files:
             # /static/upload
             fileobj = request.files['upload']
@@ -63,6 +65,7 @@ class CKEditor(object):
         response.headers["Content-Type"] = "text/html"
         return response
 
+#     实验表单
 class ExperimentForm(FlaskForm, CKEditor):
     name = StringField(u'实验名称', validators=[DataRequired()])
     description = StringField(u'实验简介', validators=[DataRequired()])
